@@ -18,8 +18,8 @@ int main(int argc, char **argv) {
 	e = malloc(WIDTH * HEIGHT * sizeof(short));
 	memset(e, '\0', WIDTH * HEIGHT * sizeof(short));
 
-	e2 = malloc(3 * WIDTH * HEIGHT * sizeof(unsigned char));
-	memset(e2, '\0', 3 * WIDTH * HEIGHT * sizeof(unsigned char));
+	e2 = malloc(4 * WIDTH * HEIGHT * sizeof(unsigned char));
+	memset(e2, '\0', 4 * WIDTH * HEIGHT * sizeof(unsigned char));
 
 	char s[2000];
 
