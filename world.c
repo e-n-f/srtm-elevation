@@ -9,13 +9,17 @@
 #define WIDTH (CELL * 360)
 #define HEIGHT (CELL * 180)
 
-unsigned char *e;
+short *e;
+unsigned char *e2;
 
 int main(int argc, char **argv) {
 	int seq = 0;
 
-	e = malloc(WIDTH * HEIGHT * sizeof(unsigned char));
-	memset(e, '\0', WIDTH * HEIGHT * sizeof(unsigned char));
+	e = malloc(WIDTH * HEIGHT * sizeof(short));
+	memset(e, '\0', WIDTH * HEIGHT * sizeof(short));
+
+	e2 = malloc(WIDTH * HEIGHT * sizeof(unsigned char));
+	memset(e2, '\0', WIDTH * HEIGHT * sizeof(unsigned char));
 
 	char s[2000];
 
@@ -70,7 +74,13 @@ int main(int argc, char **argv) {
 				int ya = y + yy * CELL / 1200;
 
 				if (xa < WIDTH && ya < HEIGHT && xa >= 0 && ya >= 0) {
-					e[ya * WIDTH + xa] = sqrt((c1 << 8) | c2);
+					short v = (c1 << 8) | c2;
+
+					if (1) {
+						if (v > e[ya * WIDTH + xa]) {
+							e[ya * WIDTH + xa] = v;
+						}
+					}
 				}
 			}
 		}
@@ -86,7 +96,19 @@ int main(int argc, char **argv) {
         image.width = WIDTH;
         image.height = HEIGHT;
 
-        png_image_write_to_stdio(&image, stdout, 0, e, WIDTH, NULL);
+	short max = 0;
+	int i;
+	for (i = 0; i < WIDTH * HEIGHT; i++) {
+		if (e[i] > max) {
+			max = e[i];
+		}
+	}
+
+	for (i = 0; i < WIDTH * HEIGHT; i++) {
+		e2[i] = sqrt(e[i]) * 255 / sqrt(max);
+	}
+
+        png_image_write_to_stdio(&image, stdout, 0, e2, WIDTH, NULL);
         png_image_free(&image);
 }
 
