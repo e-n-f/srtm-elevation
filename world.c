@@ -18,8 +18,8 @@ int main(int argc, char **argv) {
 	e = malloc(WIDTH * HEIGHT * sizeof(short));
 	memset(e, '\0', WIDTH * HEIGHT * sizeof(short));
 
-	e2 = malloc(WIDTH * HEIGHT * sizeof(unsigned char));
-	memset(e2, '\0', WIDTH * HEIGHT * sizeof(unsigned char));
+	e2 = malloc(3 * WIDTH * HEIGHT * sizeof(unsigned char));
+	memset(e2, '\0', 3 * WIDTH * HEIGHT * sizeof(unsigned char));
 
 	char s[2000];
 
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 
         memset(&image, 0, sizeof image);
         image.version = PNG_IMAGE_VERSION;
-        image.format = PNG_FORMAT_GRAY;
+        image.format = PNG_FORMAT_RGBA;
         image.width = WIDTH;
         image.height = HEIGHT;
 
@@ -105,10 +105,22 @@ int main(int argc, char **argv) {
 	}
 
 	for (i = 0; i < WIDTH * HEIGHT; i++) {
-		e2[i] = sqrt(e[i]) * 255 / sqrt(max);
+		double v = sqrt(e[i]) * 512 / sqrt(max);
+
+		if (v < 256) {
+			e2[4 * i + 0] = v;
+			e2[4 * i + 1] = v / 2;
+			e2[4 * i + 2] = 0;
+			e2[4 * i + 3] = 255;
+		} else {
+			e2[4 * i + 0] = 255;
+			e2[4 * i + 1] = 255 / 2 + (v - 256) / 2;
+			e2[4 * i + 2] = v - 256;
+			e2[4 * i + 3] = 255;
+		}
 	}
 
-        png_image_write_to_stdio(&image, stdout, 0, e2, WIDTH, NULL);
+        png_image_write_to_stdio(&image, stdout, 0, e2, 4 * WIDTH, NULL);
         png_image_free(&image);
 }
 
