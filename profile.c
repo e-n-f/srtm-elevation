@@ -127,6 +127,14 @@ int main(int argc, char **argv) {
 		} else {
 			c = getchar();
 			putchar(c);
+			if (c == ':') {
+				while ((c = getchar()) != EOF) {
+					putchar(c);
+					if (c == ' ' || c == '\n') {
+						break;
+					}
+				}
+			}
 		}
 	}
 }
